@@ -3,7 +3,7 @@
 FROM python:3.11-slim
 
 # Who maintains this (optionl but good practice)
-LABEL  maintainer = "hiruniliyanage4@gamil.com"
+LABEL  maintainer="hiruniliyanage4@gamil.com"
 
 # Set working directory inside the container
 # All subsequent commans run from/app
