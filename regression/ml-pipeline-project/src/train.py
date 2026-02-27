@@ -28,6 +28,37 @@ def load_data(test_size: float, random_state: int):
     return X_train, X_test, y_train, y_test
 
 
+def train_model(X_train, y_train, model_params: dict):
+    """Train the model. Seperated function = easy to test & swap"""
+    print("[2/4] Training model...")
+    model = RandomForestClassifier(**model_params)       # unpack the dict RandomForestClassifier(n_es..., max_dep..)
+    model.fit(X_train, y_train)
+    print(f"    Trained {model_params['n_estimators']} trees")
+    return model
+
+def evaluate_model(model, X_test, y_test) -> dict:
+    """ Evaluate and return metrics"""
+    print("[3/4] Evaluating model...")
+    y_pred = model.predict(X_test)
+    metrics = {
+        "accuracy": round(accuracy_score(y_test, y_pred),4),
+        "n_test_samples":len(y_test),
+    }
+    print(f"    Accuracy: {metrics['accuracy']:.2%}")
+    return metrics
+
+def save_artifacts(model, metrics:dict, model_path: str, metrics_path: str):
+    """ Save model and metrics - the key production step"""
+    print("[4/4] Saving artifacts...")
+    os.makedirs(os.path.dirname(model_path), exist_ok=True)
+    joblib.dump(model, model_path)
+    with open(metrics_path, "w") as f:
+        json.dump(metrics, f, indent=2)
+    print(f"   Model saved: {model_path}")
+    print(f"   Metrics saved: {metrics_path} ")
+
+
+
 def main():
     print("--- ML Training Pipeline Starting---")
     config = load_config("configs/config.yaml")
@@ -36,6 +67,15 @@ def main():
         test_size = config["data"]["test_size"],
         random_state=config["data"]["random_state"]
 
+    )
+
+    model = train_model(X_train, y_train, config["model"]["params"])
+    metrics = evaluate_model(model, X_test, y_test)
+    save_artifacts(
+        model, 
+        metrics,
+        config["output"]["model_path"],
+        config["output"]["metrics_path"]
     )
 
     print("---Pipeline Complete ---")
