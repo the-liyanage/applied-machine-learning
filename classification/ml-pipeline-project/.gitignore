@@ -6,8 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
-# Distribution / packaging
+# macOS system files
 .DS_Store
+
+# Distribution / packaging
 .Python
 build/
 develop-eggs/
@@ -206,4 +208,5 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
 
