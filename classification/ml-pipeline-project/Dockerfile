@@ -6,13 +6,13 @@ FROM python:3.11-slim
 LABEL  maintainer="hiruniliyanage4@gamil.com"
 
 # Set working directory inside the container
-# All subsequent commans run from/app
+# All subsequent commands run from/app
 WORKDIR /app
 
 
 # Copy requirements FIRST (before source code)
 # Docker cahes layers - if requirements don't change,
-# it won't reinstall packages packages on every build (big speedup)
+# it won't reinstall packages on every build (big speedup)
 COPY requirements.txt .
 
 # Install python dependencies
