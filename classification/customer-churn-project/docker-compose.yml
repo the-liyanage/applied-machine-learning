@@ -1,0 +1,40 @@
+services:
+  
+  # Service 1: Training job
+  train:
+    build: .                        # build from dockerfile in current dir
+    command: python src/train.py    # Override CMD from Dockerfile
+    volumes:
+      - ./models:/app/models        # Persist trained models
+      - ./data:/app/data            # Share data with container
+    environment:
+      - PYTHONUNBUFFERED=1        # See print() output in real time
+
+  # Service 2: Run tests
+  test:
+    build: .
+    command: pytest tests/ -v
+    volumes:
+      - ./tests:/app/tests
+      - ./src:/app/src
+
+  # Serivice 3: Interactive dev shell
+  dev:
+    build: .
+    command: bash
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app
+
+  # Service 4:
+  jupyter:
+    build: .
+    command: jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=""
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+
